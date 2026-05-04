@@ -445,3 +445,14 @@ test('stash with unknown command shows error', () => {
 
     assert.match(output, /Unknown stash command/)
 })
+
+test('stash save outside a mygit repository fails cleanly', () => {
+    const mygitDir = path.join(baseDir, '.mygit')
+
+    fs.rmSync(mygitDir, { recursive: true, force: true })
+
+    const { output } = captureOutput(() => stash(['save', 'Test stash']))
+
+    assert.match(output, /(not a mygit repository|outside a mygit repository)/i)
+    assert.strictEqual(fs.existsSync(mygitDir), false)
+})

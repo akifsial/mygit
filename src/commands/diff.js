@@ -36,8 +36,8 @@ function getTreeHashFromCommit(commitHash) {
  */
 function diffContents(aText, bText, filePath, status, mode, aHash, bHash) {
     const hunks = myersDiff(
-        aText ? tokenize(aText, 'word') : [],
-        bText ? tokenize(bText, 'word') : []
+        aText ? tokenize(aText, 'line') : [],
+        bText ? tokenize(bText, 'line') : []
     )
     const output = formatDiff(hunks, { filePath, status, mode, aHash, bHash })
     if (output) console.log(output)

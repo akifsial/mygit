@@ -20,6 +20,11 @@ function tokenize(text, mode='word') {
         return text.match(/\S+|\s+/g) ?? []
     }
 
+    if (mode === 'line') {
+        // Each token = one line, newline included
+        return text.match(/[^\n]*\n|[^\n]+/g) ?? []
+    }
+
     throw new Error(`tokenize: unknown mode "${mode}"`)
 
 }

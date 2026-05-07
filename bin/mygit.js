@@ -7,7 +7,7 @@ const [,, command, ...args] = process.argv
 const commands = {
     'init': {
         modulePath: path.join(__dirname, '..', 'src', 'commands', 'init'),
-        handler: function(args) {require(this.modulePath) ()}
+        handler: function(args) {require(this.modulePath) (args[0])}
     },
     'add': {
         modulePath: path.join(__dirname, '..', 'src', 'commands', 'add'),

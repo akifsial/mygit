@@ -5,22 +5,11 @@ const { execFileSync } = require('child_process')
 const path = require('path')
 
 const { setupRepo, cleanupRepo, baseDir } = require('./helpers/setup')
+const run = require('./helpers/run')
 const cliPath = path.join(__dirname, '..', 'bin', 'mygit.js')
 
 function stripAnsi(text) {
     return text.replace(/\x1b\[[0-9;]*m/g, '')
-}
-
-function runCli(args) {
-    return execFileSync(process.execPath, [cliPath, ...args], {
-        cwd: baseDir,
-        encoding: 'utf-8',
-        env: {
-            ...process.env,
-            NO_COLOR: '1',
-            FORCE_COLOR: '0'
-        }
-    }).trim()
 }
 
 function writeFile(filePath, content) {
@@ -35,11 +24,11 @@ function initMainBranch() {
 }
 
 function stage(filePath) {
-    runCli(['add', filePath])
+    run(`node ${cliPath} add ${filePath}`)
 }
 
 function commit(message) {
-    return stripAnsi(runCli(['commit', '-m', message]))
+    return stripAnsi(run(`node ${cliPath} commit -m ${message}`))
 }
 
 function readMainCommit() {
@@ -56,7 +45,7 @@ test.afterEach(cleanupRepo)
 console.log('\nTESTING DIFF\n')
 
 test('diff reports when nothing is staged yet', () => {
-    const output = stripAnsi(runCli(['diff']))
+    const output = stripAnsi(run(`node ${cliPath} diff`))
 
     assert.strictEqual(output, 'nothing staged')
 })
@@ -65,7 +54,7 @@ test('diff stays silent when the working tree matches the index', () => {
     writeFile('tracked.txt', 'hello')
     stage('tracked.txt')
 
-    const output = stripAnsi(runCli(['diff']))
+    const output = stripAnsi(run(`node ${cliPath} diff`))
 
     assert.strictEqual(output, '')
 })
@@ -76,7 +65,7 @@ test('diff shows modified working tree files against the index', () => {
 
     writeFile('tracked.txt', 'world')
 
-    const output = stripAnsi(runCli(['diff']))
+    const output = stripAnsi(run(`node ${cliPath} diff`))
 
     assert.match(output, /diff --mygit a\/tracked\.txt b\/tracked\.txt/)
     assert.match(output, /index [0-9a-f]{7}\.\.0000000 100644/)
@@ -90,7 +79,7 @@ test('diff shows deleted working tree files against the index', () => {
     stage('deleted.txt')
     fs.unlinkSync(path.join(baseDir, 'deleted.txt'))
 
-    const output = stripAnsi(runCli(['diff']))
+    const output = stripAnsi(run(`node ${cliPath} diff`))
 
     assert.match(output, /diff --mygit a\/deleted\.txt b\/deleted\.txt/)
     assert.match(output, /deleted file mode 100644/)
@@ -105,7 +94,7 @@ test('diff --cached shows staged modifications against HEAD', () => {
     writeFile('cached.txt', 'beta')
     stage('cached.txt')
 
-    const output = stripAnsi(runCli(['diff', '--cached']))
+    const output = stripAnsi(run(`node ${cliPath} diff --cached`))
 
     assert.match(output, /diff --mygit a\/cached\.txt b\/cached\.txt/)
     assert.match(output, /index [0-9a-f]{7}\.\.[0-9a-f]{7} 100644/)
@@ -122,7 +111,7 @@ test('diff --cached shows newly staged files against HEAD', () => {
     writeFile('new-file.txt', 'new content')
     stage('new-file.txt')
 
-    const output = stripAnsi(runCli(['diff', '--cached']))
+    const output = stripAnsi(run(`node ${cliPath} diff --cached`))
 
     assert.match(output, /diff --mygit a\/new-file\.txt b\/new-file\.txt/)
     assert.match(output, /new file mode 100644/)
@@ -143,7 +132,7 @@ test('diff between two commits shows modified and added files', () => {
     commit('second commit')
     const secondCommit = readMainCommit()
 
-    const output = stripAnsi(runCli(['diff', firstCommit, secondCommit]))
+    const output = stripAnsi(run(`node ${cliPath} diff ${firstCommit} ${secondCommit}`))
 
     assert.match(output, /diff --mygit a\/shared\.txt b\/shared\.txt/)
     assert.match(output, /-one/)

@@ -1,6 +1,6 @@
 # Contributing to mygit
 
-Thanks for contributing to mygit. Before you start, please read this document to understand the project's goals and structure.
+Thanks for contributing to **mygit**. Before you start, please read this document to understand the project's goals and structure.
 This project is a simplified Git implementation built in Node.js, focused on understanding how Git works internally.
 
 ---
@@ -17,7 +17,7 @@ mygit aims to:
 
 ## Project Structure
 
-Please respect the current architecture:
+Please try to stay close to the current architecture:
 ```
 mygit/
 ├── bin/
@@ -53,7 +53,7 @@ We use GitHub Discussions for:
 
 Only after agreement should a feature become a PR.
 
-For bug fixes or small improvements you can create issues and submit PRs directly.
+> For bug fixes or small improvements you can create issues and submit PRs directly. No need to go through 'Discussions' for minor changes.
 
 ---
 
@@ -62,7 +62,7 @@ For bug fixes or small improvements you can create issues and submit PRs directl
 - Keep functions small and single-purpose
 - Prefer explicit logic over abstraction
 - Avoid duplicating core logic (refactor instead)
-- Keep CLI commands thin (they should call `src/core/`)
+- Keep CLI commands thin (they should call `src/core/` or `src/helpers/`)
 
 ---
 
@@ -83,7 +83,7 @@ types:
 - `refactor`: code restructuring (no behavior change)
 - `test`: only for tests
 - `chore`: maintenance
-- `docs`: documnetation
+- `docs`: documentation
 
 Examples
 - `feat: add commit command`

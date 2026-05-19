@@ -22,9 +22,11 @@ Mygit supports the following commands:
 - **`tag`** - Create or list tags
 - **`diff`** - Show changes between commits, commit and working tree, or index and working tree
 - **`stash`** - Stash changes in a dirty working directory away
+- **`ignore`** - Manage `.mygitignore` file from the command line 
 
 Other features include:
 - Support for `.mygitignore` files to exclude files from staging, status and diff operations
+- logger utility for debugging purposes
 
 ## Installation
 

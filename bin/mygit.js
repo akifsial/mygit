@@ -13,6 +13,10 @@ const commands = {
         modulePath: path.join(__dirname, '..', 'src', 'commands', 'add'),
         handler: function(args) { require(this.modulePath) (args) }
     },
+    'rm': {
+        modulePath: path.join(__dirname, '..', 'src', 'commands', 'rm'),
+        handler: function(args) { require(this.modulePath) (args) }
+    },
     'commit': {
         modulePath: path.join(__dirname, '..', 'src', 'commands', 'commit'),
         handler: function (args) {

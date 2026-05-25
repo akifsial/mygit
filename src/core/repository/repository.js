@@ -37,7 +37,7 @@ class Repository {
             const parent = path.dirname(current)
 
             if (parent === current) {
-                logger.error(`fatal: not a mygit repositore - path=${current}`)
+                logger.error(`fatal: not a mygit repositore`)
                 throw new Error('fatal: not a mygit repository')
             }
 
@@ -58,6 +58,7 @@ class Repository {
         fs.mkdirSync(path.join(mygitDir, 'refs', 'tags'), { recursive: true })
 
         fs.writeFileSync(path.join(mygitDir, 'HEAD'), 'ref: refs/heads/main\n')
+        fs.writeFileSync(path.join(mygitDir, 'config'), JSON.stringify({repositoryFormatVersion: 0, defaultBranch: 'main'}, null, 2))
 
         return new Repository(worktree, mygitDir)
     }

@@ -164,6 +164,13 @@ Each command manipulates these core data structures to provide version control f
 
 Mygit is an experimental project and is still in development and by no means it is meant to be use as a production-ready product. 
 
+## Contributors
+
+
+<a href = "https://github.com/Leonardo-Garzon-1995/mygit/graphs/contributors">
+   <img src = "https://contrib.rocks/image?repo=Leonardo-Garzon-1995/mygit"/>
+ </a>
+
 ## Contributing
 
 Read the [contribution](CONTRIBUTING.md) guidelines on how to contribute to this project.

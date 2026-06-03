@@ -17,6 +17,9 @@ function validateIndex(index) {
     if (!index || typeof index !== 'object') {
         throw new ValidationError('Index must be an object')
     }
+    if (typeof index.version !== 'number') {
+        throw new ValidationError('Index version is required')
+    }
     if (!index.entries || index.entries !== 'object') {
         throw new ValidationError('Index entries are missing')
     }

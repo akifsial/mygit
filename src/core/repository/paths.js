@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require('../../utils/paths')
 
 function objectPath(repo, hash) {
     return path.join(repo.paths.objects, hash.slice(0, 2), hash.slice(2))

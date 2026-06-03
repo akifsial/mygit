@@ -1,5 +1,6 @@
-const fs = require('fs')
-const path = require('path')
+const fs = require('../../utils/filesystem')
+const path = require('../../utils/paths')
+const { RepositoryNotFoundError } = require('../../errors')
 
 const logger = require('../../utils/logger')
 
@@ -30,7 +31,7 @@ class Repository {
         while(true) {
             const mygitDir = path.join(current, '.mygit')
 
-            if (fs.existsSync(mygitDir)) {
+            if (fs.exists(mygitDir)) {
                 return new Repository(current, mygitDir)
             }
 
@@ -38,7 +39,7 @@ class Repository {
 
             if (parent === current) {
                 logger.error(`fatal: not a mygit repositore`)
-                throw new Error('fatal: not a mygit repository')
+                throw new RepositoryNotFoundError()
             }
 
             current = parent 
@@ -49,28 +50,28 @@ class Repository {
         const worktree = path.resolve(targetDir)
         const mygitDir = path.join(worktree, '.mygit')
 
-        if (fs.existsSync(mygitDir)) {
-            throw new Error("A '.mygit' directory already exists inside this folder.")
+        if (fs.exists(mygitDir)) {
+            throw new Error("fatal: A '.mygit' directory already exists inside this folder.")
         }
 
-        fs.mkdirSync(path.join(mygitDir, 'objects'), { recursive: true })
-        fs.mkdirSync(path.join(mygitDir, 'refs', 'heads'), { recursive: true })
-        fs.mkdirSync(path.join(mygitDir, 'refs', 'tags'), { recursive: true })
+        fs.ensureDir(path.join(mygitDir, 'objects'))
+        fs.ensureDir(path.join(mygitDir, 'refs', 'heads'))
+        fs.ensureDir(path.join(mygitDir, 'refs', 'tags'))
 
-        fs.writeFileSync(path.join(mygitDir, 'HEAD'), 'ref: refs/heads/main\n')
-        fs.writeFileSync(path.join(mygitDir, 'config'), JSON.stringify({repositoryFormatVersion: 0, defaultBranch: 'main'}, null, 2))
+        fs.writeFile(path.join(mygitDir, 'HEAD'), 'ref: refs/heads/main\n')
+        fs.writeFile(path.join(mygitDir, 'config'), JSON.stringify({repositoryFormatVersion: 0, defaultBranch: 'main'}, null, 2))
 
         return new Repository(worktree, mygitDir)
     }
 
     exists() {
-        return fs.existsSync(this.mygitDir)
+        return fs.exists(this.mygitDir)
     }
 
     ensure() {
         if (!this.exists()) {
             logger.warn('fatal: not a mygit repository')
-            throw new Error('fatal: not a mygit repository')
+            throw new RepositoryNotFoundError()
         }
     }
 
@@ -83,11 +84,11 @@ class Repository {
     }
 
     hasHead() {
-        return fs.existsSync(this.paths.head)
+        return fs.exists(this.paths.head)
     }
 
     readHead() {
-        return fs.readFileSync(this.paths.head, 'utf8').trim()
+        return fs.readFile(this.paths.head).trim()
     }
 }
 

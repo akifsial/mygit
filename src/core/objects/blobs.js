@@ -12,7 +12,7 @@ const { OBJECT_TYPES } = require('../../constants')
  * @param {*} content 
  * @returns 
  */
-function writeBlob(repo, content) {
+function writeBlobObject(repo, content) {
     validateBlobContent(content)
 
     return writeObject(repo, OBJECT_TYPES.BLOB, content)
@@ -31,7 +31,7 @@ function hashFile(repo, filePath) {
 
     const content =  fs.readFileSync(filePath)
 
-    return writeBlob(repo, content)
+    return writeBlobObject(repo, content)
 }
 
 // BLOB READING
@@ -42,7 +42,7 @@ function hashFile(repo, filePath) {
  * @param {*} hash 
  * @returns 
  */
-function readBlob(repo, hash) {
+function readBlobObject(repo, hash) {
     const object = readObject(repo, hash) 
 
     if (object.type !== OBJECT_TYPES.BLOB) {
@@ -93,10 +93,10 @@ function blobMatchesFile(repo, hash, filePath) {
 }
 
 module.exports = {
-    writeBlob,
+    writeBlobObject,
     writeBlobToFile,
     hashFile,
-    readBlob,
+    readBlobObject,
     readBlobAsString,
     validateBlobContent,
     blobExists,

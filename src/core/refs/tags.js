@@ -1,132 +1,67 @@
-// fs is not yet implemented
-const { readFile, writeFile, exists, removeFile, ensureDir } = require('../../utils/fs')
-// validation.js is not implemented yet
-const { isValidHash, isValidRef } = require('../../utils/validation')
-
+const { isValidTagName} = require('../../utils/validation') 
+const { ValidationError } = require('../../errors')
 const { tagPath } = require('../repository/paths')
-const { ValidationError, InvalidReferenceError } = require('../../errors')
-const { write } = require('fs')
+const {
+    createReference,
+    readReference,
+    updateReference,
+    deleteReference,
+    referenceExists,
+    buildReference
+} = require('./references')
 
-// HELPERS
+// Validation
 
-function getTagRef(tagName) {
-    return `refs/tags/${tagname}`
-}
-
-function validateTagname(tagName) {
-    if (typeof tagName !== 'string' || tagname.trim() === '') {
-        throw new ValidationError('Tag name is required')
-    }
-
-    const invalid = [
-        '..',
-        '~',
-        '^',
-        ':',
-        '?',
-        '*',
-        '[',
-        '\\'
-    ]
-
-    for (const token of invalid) {
-        if (tagName.includes(token)) {
-            throw new ValidationError(`Invalid tag name: ${tagname}. Tag name includes inavlid char: '${token}'`)
-        }
+function validateTagName(tagName) {
+    if (!isValidTagName(tagName)) {
+        throw new ValidationError(`Invalid tag name: ${tagName}`)
     }
 }
 
-// TAG references 
+// Core 
 
-/**
- * Create a lightweight tag
- * @param {*} repo 
- * @param {*} tagName 
- * @param {*} hash 
- */
 function createTag(repo, tagName, hash) {
-    validateTagname(tagName)
+    validateTagName(tagName)
 
-    if (!isValidHash(hash)) {
-        throw new ValidationError(`Invalid object hash: ${hash}`)
-    }
-
-    const filePath = tagPath(repo, tagName)
-    ensureDir(require('path').dirname(filePath))
-
-    writeFile(filePath, `${hash}\n`)
+    createReference(tagPath(repo, tagName), hash)
 }
 
-
-/**
- * Reaf lightweight tag reference
- * @param {*} repo 
- * @param {*} tagName 
- * @returns 
- */
 function readTag(repo, tagName) {
-    validateTagname(tagName)
+    validateTagName(tagName)
 
-    const filePath = tagPath((repo, tagName))
-    
-    if (!exists(filePath)) {
-        throw new InvalidReferenceError(`Tag '${tagName}' does not exist`)
-    }
-
-    return readFile(filePath).trim()
+    return readReference(tagPath(repo, tagName))
 }
 
-/**
- * Update existing tag
- * @param {*} repo 
- * @param {*} tagName 
- * @param {*} hash 
- */
 function updateTag(repo, tagName, hash) {
-    if (!tagExists(repo, tagName)) {
-        throw new InvalidReferenceError(`Tag '${tagName}' does not exist`)
-    }
+    validateTagName(tagName)
 
-    createTag(repo, tagName, hash)
+    updateReference(tagPath(repo, tagName), hash)
 }
 
 function deleteTag(repo, tagName) {
-    const filePath = tagPath(repo, tagName)
+    validateTagName(tagName)
 
-    if (!exists(filePath)) {
-        throw new InvalidReferenceError(`Tag '${tagName}' does not exist`)
-    }
-
-    removeFile(filePath)
+    deleteReference(tagPath(repo, tagName))
 }
 
 // Queries
-function tagExists(repo, name) {
-    validateTagname(repo, name)
 
-    return exist(tagPath(repo, name))
-}
+function tagExists(repo, tagName) {
+    validateTagName(tagName)
 
-function resolveTag(repo, name) {
-    return readTag(repo, name)
+    return referenceExists(tagPath(repo, tagName))
 }
 
 function getTagPath(repo, tagName) {
+    validateTagName(tagName)
+
     return tagPath(repo, tagName)
 }
 
 function getTagReference(tagName) {
     validateTagName(tagName)
 
-    const ref = getTagRef(tagName)
-
-    if (!isValidRef(ref)) {
-        throw new ValidationError(
-            `Invalid tag reference: ${ref}`
-        )
-    }
-
-    return ref
+    return buildReference('tags', tagName)
 }
 
 module.exports = {
@@ -136,12 +71,9 @@ module.exports = {
     deleteTag,
 
     tagExists,
-    resolveTag,
 
     getTagPath,
     getTagReference,
 
-    validateTagname
+    validateTagName
 }
-
-

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or Need Help?
+    url: https://github.com/Leonardo-Garzon-1995/mygit/discussions
+    about: Ask questions and get help in Discussions
+  - name: Documentation
+    url: https://github.com/Leonardo-Garzon-1995/mygit#readme
+    about: Review the README and project documentation

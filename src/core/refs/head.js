@@ -61,6 +61,12 @@ function resolveHEAD(repo) {
     return fs.readFile(filePath).trim()
 }
 
+function getCurrentBranch(repo) {
+    const headRef = getHEADref(repo)
+
+    return headRef.replace(/^refs\/heads\//, '').trim()
+}
+
 module.exports = {
     readHEAD,
     isSymbolicHEAD,
@@ -68,5 +74,7 @@ module.exports = {
     getHEADHash,
     setHEADRef,
     detachHEAD,
-    resolveHEAD
+    resolveHEAD,
+
+    getCurrentBranch
 }

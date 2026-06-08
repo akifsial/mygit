@@ -5,7 +5,8 @@ const path = require('path')
 /* When importing import as:
     const fs = require('...') 
     
-    to make avoid name collisions and to make sure youre referring to filesystem functionality*/
+    to make avoid name conflicts and to make sure youre referring to filesystem functionality
+*/
 
 function exists(filePath) {
     return fs.existsSync(filePath)
@@ -21,8 +22,9 @@ function isDirectory(filePath) {
 
 // Dir operations 
 
-function ensureDir(dirPath) {
-    fs.mkdirSync(dirPath, { recursive: true })
+function ensureDir(dirPath, options={ recursive: true}) {
+    
+    fs.mkdirSync(dirPath, options)
 }
 
 function removeDir(dirPath, f=true) {

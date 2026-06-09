@@ -1,17 +1,9 @@
 const { readObject, writeObject } = require('./storage')
-const { parseCommit, parseSignature } = require('./parser')
+const { parseCommit } = require('./parser')
 const { ValidationError, InvalidObjectError } = require('../../errors')
+const { formatSignature, parseSignature } = require('./signatures')
 
 // Helpers
-
-function formatSignature(signature) {
-    return (
-        `${signature.name} ` +
-        `<${signature.email}> ` +
-        `${signature.timestamp} ` +
-        `${signature.timezone}`
-    )
-}
 
 function validateCommitData({tree, author, committer}) {
     if (!tree)      throw new ValidationError('Commit tree is required')

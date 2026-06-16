@@ -65,7 +65,7 @@ const FILE_MODES = {
 // ── Exports ───────────────────────────────────────────────────────────────────
 
 module.exports = {
-    MYGIT_DIR,
+    MYGITDIR_NAME,
     DEFAULT_BRANCH,
     HASH_ALGORITHM,
     HASH_SIZE,

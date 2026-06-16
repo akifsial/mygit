@@ -1,7 +1,14 @@
 #!/usr/bin/env node
 
 const path = require('path')
+const {parseArgs} =  require('../src/cli/CLIParser')
+const logger = require('../src/utils/logger')
 const [,, command, ...args] = process.argv
+
+// Testing cli parser ------------------------------------
+const parsed = parseArgs(process.argv.slice(2))
+logger.info(parsed)
+// ------------------------------------------------------
 
 
 const commands = {
@@ -141,15 +148,25 @@ const commands = {
     'show-tree': {
         module: path.join(__dirname, '..', 'tests', 'show-tree'),
         handler: function(args) { require(this.module) (args[0]) }
+    },
+    'test': {
+        modulePath: path.join(__dirname, '..', 'test'),
+        handler: function(args) { require(this.modulePath) (args[0]) }
     }
 }
 
 const helpCommands = ['help', '-h']
 
-if (helpCommands.includes(command)) {
+try {
+    if (helpCommands.includes(command)) {
     require(path.join(__dirname, '..', 'src', 'utils', 'displayHelp')) (args[0])
-} else if (commands[command]) {
-    commands[command].handler(args)
-} else {
-    require(path.join(__dirname, '..', 'src', 'utils', 'displayHelp'))();
+    } else if (commands[command]) {
+        commands[command].handler(args)
+    } else {
+        require(path.join(__dirname, '..', 'src', 'utils', 'displayHelp'))();
+    }
+} catch (error) {
+    logger.error(error.stack)
+    console.error(error.message)
 }
+

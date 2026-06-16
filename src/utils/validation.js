@@ -1,7 +1,9 @@
 /**
- * Centralized validation utility module.
+ * @fileoverview Centralized validation utility module.
  * Provides reusable validation helpers shared across multiple subsystems.
  */
+
+const { OBJECT_TYPES } = require('../constants')
 
 /**
  * Checks whether a string is a valid SHA-1 hash.
@@ -26,7 +28,7 @@ function isValidHash(hash) {
  * @returns {boolean}
  */
 function isValidObjectType(type) {
-    const validTypes = ['blob', 'tree', 'commit', 'tag'];
+    const validTypes = Object.values(OBJECT_TYPES);
     return validTypes.includes(type);
 }
 
@@ -83,7 +85,9 @@ function isValidPath(filePath) {
  * @returns {boolean}
  */
 function isValidTagName(tagName) {
-        assertRequired(tagName)
+        if (typeof tagName !== 'string') {
+            return false
+        }
 
         const invalid = ['..', '~', '^', ':', '?', '*', '[', '\\']
 
@@ -108,19 +112,12 @@ function isValidSignature(signature) {
     return /^(.*?) <(.*?)> (\d+) ([+-]\d{4})$/.test(signature)
 }
 
-/**
- * Throws an error if a required value is missing.
- * 
- * @param {any} value
- * @param {string} message
- */
-function assertRequired(value, message) {
-    if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) {
-        const error = new Error(message || 'Required value is missing');
-        error.name = 'ValidationError';
-        throw error;
-    }
-}
+// Need to implement
+/* 
+- isValidObjecthash
+- isValidEmail
+- isValidRepository
+- isValidCommit Message */
 
 
 

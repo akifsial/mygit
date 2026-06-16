@@ -1,5 +1,6 @@
 const fs = require('../../utils/filesystem')
 const path = require('../../utils/paths')
+const { MYGITDIR_NAME } = require('../../constants')
 const { RepositoryNotFoundError } = require('../../errors')
 
 const logger = require('../../utils/logger')
@@ -21,7 +22,8 @@ class Repository {
     }
 
     static open(repoPath=process.cwd()) {
-        const mygitDir = path.join(repoPath, '.mygit')
+        this.ensure()
+        const mygitDir = path.join(repoPath, MYGITDIR_NAME)
         return new Repository(repoPath, mygitDir)
     }
 
@@ -29,7 +31,7 @@ class Repository {
         let current = path.resolve(startPath)
 
         while(true) {
-            const mygitDir = path.join(current, '.mygit')
+            const mygitDir = path.join(current, MYGITDIR_NAME)
 
             if (fs.exists(mygitDir)) {
                 return new Repository(current, mygitDir)
@@ -38,7 +40,7 @@ class Repository {
             const parent = path.dirname(current)
 
             if (parent === current) {
-                logger.error(`fatal: not a mygit repositore`)
+                logger.error(`fatal: not a mygit repository`)
                 throw new RepositoryNotFoundError()
             }
 
@@ -48,7 +50,7 @@ class Repository {
     
     static init(targetDir=process.cwd()) {
         const worktree = path.resolve(targetDir)
-        const mygitDir = path.join(worktree, '.mygit')
+        const mygitDir = path.join(worktree, MYGITDIR_NAME)
 
         if (fs.exists(mygitDir)) {
             throw new Error("fatal: A '.mygit' directory already exists inside this folder.")

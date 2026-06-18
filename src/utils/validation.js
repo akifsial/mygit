@@ -43,7 +43,7 @@ function isValidRef(ref) {
     if (typeof ref !== 'string') return false;
     if (!ref.startsWith('refs/')) return false;
     // A ref must have a valid path after refs/
-    return /^(refs\/heads\/|refs\/tags\/)[^\s~^:?*\[]+$/.test(ref);
+    return /^(refs\/heads\/|refs\/tags\/|refs\/remotes\/|refs\/stash\/)[^\s~^:?*\[]+$/.test(ref);
 }
 
 /**
@@ -170,7 +170,6 @@ module.exports = {
     isValidBranchName,
     isValidPath,
     isValidSignature,
-    assertRequired,
     isValidObjectHash,
     isValidEmail,
     isValidRepository,
